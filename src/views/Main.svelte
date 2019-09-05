@@ -10,16 +10,21 @@
     goalsStore.subscribe(goals => {
         goalState = goals;
         allGoals = Object.values(goals);
-        activeGoals = allGoals.filter(goal => !goal.steadyOverride && goal.steadyDate > today);
-        steadyGoals = allGoals.filter(goal => goal.steadyOverride || goal.steadyDate < today);
+        console.log('hjere');
     });
+
+    $: {
+        activeGoals = allGoals.filter(goal => !goal.steadyOverride && new Date(goal.steadyDate) > today);
+        steadyGoals = allGoals.filter(goal => goal.steadyOverride || new Date(goal.steadyDate) < today);
+        console.log(allGoals, activeGoals, steadyGoals);
+    }
 </script>
 
 <Form />
 <h1>Active Goals</h1>
 {#each activeGoals as goal, index (goal.id)}
     <h2>{goal.name}</h2>
-    Steady at: {goal.steadyDate.toLocaleDateString()}
+    Steady at: {goal.steadyDate}
     <button on:click={() => goalActions.resetGoal(goal)}>Reset</button>
     <button on:click={() => appActions.seeEdit(goal)}>Revise</button>
     <button on:click={() => goalActions.deleteGoal(goal)}>Not Working</button>

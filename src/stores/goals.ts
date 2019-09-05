@@ -43,7 +43,8 @@ const resetGoal = (goal: Goal) =>
         [goal.id]: { ...goal, resets: goal.resets + 1, steadyOverride: false, steadyDate: week, lastReset: today },
     }));
 
-export let goals: any = writable({});
+export let goals: any = writable(JSON.parse(localStorage.getItem('goals')));
+goals.subscribe(state => localStorage.setItem('goals', JSON.stringify(state))); //replace direct localstorage calls with an interface
 
 export const actions = {
     createGoal,

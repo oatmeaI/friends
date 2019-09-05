@@ -3,29 +3,22 @@
   // TODO - persist data - maybe start with localstorage, build persistence layer, then consider how to move forward
   // Persist locally & allow data porting & cloud sync would be rad
   import Form from "./Form.svelte";
-  import goals from "./goals.ts";
+  import { today } from "./dates.ts";
+  import { actions as goalActions, goals as goalsStore } from "./goals.ts";
   import app from "./app.ts";
-
-  let inputState = {
-    steadyDate: "",
-    name: "",
-    steadyOverride: false
-  };
-
-  let nameInput, steadyInput, steadyDateInput, editNameInput;
 
   let allGoals, activeGoals, steadyGoals, selectedGoal;
 
-  $: {
-    console.log(goals.goals);
-    activeGoals = goals.goals.filter(
+  goalsStore.subscribe(goals => {
+    allGoals = goals;
+    activeGoals = goals.filter(
       goal => !goal.steadyOverride && goal.steadyDate > today
     );
     steadyGoals = goals.goals.filter(
       goal => goal.steadyOverride || goal.steadyDate < today
     );
     selectedGoal = goals.goals.find(goal => goal.id === appStore.selectedGoal);
-  }
+  });
 </script>
 
 {#if app.state.view === 'all'}

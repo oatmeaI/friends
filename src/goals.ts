@@ -1,4 +1,5 @@
 import { week, today } from "./dates";
+import { writable } from "svelte/store";
 
 export interface Goal {
   steadyDate?: Date;
@@ -10,7 +11,7 @@ export interface Goal {
   id: string;
 }
 
-let goals: Goal[] = [];
+export let goals: any = writable([]);
 
 const createGoal = ({ steady, name }: { steady: boolean; name: string }) => {
   const newGoal = {
@@ -22,8 +23,7 @@ const createGoal = ({ steady, name }: { steady: boolean; name: string }) => {
     bestStreak: 0,
     id: generateId()
   };
-  goals = [...goals, newGoal];
-  console.log(goals);
+  goals.update(oldGoals => [...oldGoals, newGoal]);
 };
 
 const updateGoal = (goal: Goal, name: string) => {
@@ -68,8 +68,7 @@ const resetGoal = (goal: Goal) => {
 
 const generateId = () => btoa(`${Math.random()}`).substring(0, 12);
 
-export default {
-  goals,
+export const actions = {
   createGoal,
   updateGoal,
   deleteGoal,

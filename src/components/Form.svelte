@@ -1,5 +1,5 @@
 <script>
-  import goals from "./goals.ts";
+  import { actions as goalActions } from "../stores/goals.ts";
 
   let inputState = {
     name: "",
@@ -9,7 +9,7 @@
   let nameInput, steadyInput;
 
   const onSubmit = () => {
-    goals.createGoal({
+    goalActions.createGoal({
       steady: inputState.steadyOverride,
       name: inputState.name
     });

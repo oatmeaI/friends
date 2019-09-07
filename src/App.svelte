@@ -1,5 +1,8 @@
 <script>
     // TODO - data persistence - some sort of cloud nosql??
+    // TODO - max active goals
+    // TODO - readme
+    // TODO - onboarding
     // TODO - could be cool to have 'undo' by storing snapshots of state everytime an action happens - would be easy with subscriptions
     // TODO - keyboard shortcuts for everythaaaaaang
 
@@ -32,9 +35,16 @@
         font-family: Monaco;
         font-size: 14px;
     }
+
+    h1 {
+        margin: auto;
+        text-align: center;
+        margin-bottom: 15px;
+    }
 </style>
 
 <main>
+    <h1>Goalie</h1>
     {#if appState.view === 'all'}
         <Main {selectedGoal} />
     {:else if appState.view === 'edit'}

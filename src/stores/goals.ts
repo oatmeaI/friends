@@ -1,6 +1,7 @@
 import { week, today } from '../util/dates';
 import { writable } from 'svelte/store';
 import { omit, generateId } from '../util/utils';
+import { retrieve, persist } from '../storage';
 
 export interface Goal {
     steadyDate?: Date;
@@ -43,8 +44,22 @@ const resetGoal = (goal: Goal) =>
         [goal.id]: { ...goal, resets: goal.resets + 1, steadyOverride: false, steadyDate: week, lastReset: today },
     }));
 
-export let goals: any = writable(JSON.parse(localStorage.getItem('goals')));
-goals.subscribe(state => localStorage.setItem('goals', JSON.stringify(state))); //replace direct localstorage calls with an interface
+console.log();
+
+export let goals: any = writable(
+    Object.values(retrieve('goals', {})).reduce(
+        (goals, goal: Goal) => ({
+            ...goals,
+            [goal.id]: {
+                ...goal,
+                steadyDate: goal.steadyDate ? new Date(goal.steadyDate) : null,
+                lastReset: goal.lastReset ? new Date(goal.lastReset) : null,
+            },
+        }),
+        {},
+    ),
+);
+goals.subscribe(state => persist('goals', state));
 
 export const actions = {
     createGoal,

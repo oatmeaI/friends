@@ -1,27 +1,50 @@
 <script>
-  import { actions as goalActions } from "../stores/goals.ts";
+    import { actions as goalActions } from '../stores/goals.ts';
 
-  let inputState = {
-    name: "",
-    steadyOverride: false
-  };
+    let nameInput, steadyInput;
 
-  let nameInput, steadyInput;
-
-  const onSubmit = () => {
-    goalActions.createGoal({
-      steady: inputState.steadyOverride,
-      name: inputState.name
-    });
-
-    nameInput.value = "";
-    steadyInput.value = false;
-  };
+    const onSubmit = e => {
+        if (e.keyCode && e.keyCode !== 13) {
+            return;
+        }
+        goalActions.createGoal({
+            steady: steadyInput.checked,
+            name: nameInput.value,
+        });
+        steadyInput.checked = false;
+        nameInput.value = '';
+    };
 </script>
 
-<input type="text" bind:this={nameInput} bind:value={inputState.name} />
-<input
-  type="checkbox"
-  bind:this={steadyInput}
-  bind:value={inputState.steadyOverride} />
-<button on:click={onSubmit}>Add</button>
+<style>
+    .container {
+        width: 35%;
+        margin: auto;
+    }
+    label {
+        display: inline;
+        font-weight: bold;
+    }
+    input[type='text'] {
+        width: 100%;
+    }
+    .row {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
+    .checkbox {
+        padding-top: 5px;
+    }
+</style>
+
+<div class="container">
+    <input id="name" placeholder="Goal" type="text" bind:this={nameInput} on:keydown={onSubmit} />
+    <div class="row">
+        <span class="checkbox">
+            <input id="steady" type="checkbox" bind:this={steadyInput} />
+            <label for="steady">Start Steady</label>
+        </span>
+        <button on:click={onSubmit}>Add</button>
+    </div>
+
+</div>

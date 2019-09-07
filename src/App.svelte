@@ -1,6 +1,8 @@
 <script>
-    // TODO - persist data - maybe start with localstorage, build persistence layer, then consider how to move forward
-    // Persist locally & allow data porting & cloud sync would be rad
+    // TODO - data persistence - some sort of cloud nosql??
+    // TODO - could be cool to have 'undo' by storing snapshots of state everytime an action happens - would be easy with subscriptions
+    // TODO - keyboard shortcuts for everythaaaaaang
+
     import Main from './views/Main.svelte';
     import Edit from './views/Edit.svelte';
     import Detail from './views/Detail.svelte';
@@ -12,14 +14,32 @@
     goalsStore.subscribe(goals => (goalState = goals));
 
     $: {
-        selectedGoal = goalState[appState.selectedGoal];
+        selectedGoal = appState.selectedGoal ? goalState[appState.selectedGoal] : null;
     }
 </script>
 
-{#if appState.view === 'all'}
-    <Main {selectedGoal} />
-{:else if appState.view === 'edit'}
-    <Edit {selectedGoal} />
-{:else if appState.view === 'detail'}
-    <Detail {selectedGoal} />
-{/if}
+<style>
+    main {
+        width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        background: #eeeeee;
+        min-height: 98%;
+        padding: 10px 15px;
+    }
+
+    :global(body) {
+        font-family: Monaco;
+        font-size: 14px;
+    }
+</style>
+
+<main>
+    {#if appState.view === 'all'}
+        <Main {selectedGoal} />
+    {:else if appState.view === 'edit'}
+        <Edit {selectedGoal} />
+    {:else if appState.view === 'detail'}
+        <Detail {selectedGoal} />
+    {/if}
+</main>

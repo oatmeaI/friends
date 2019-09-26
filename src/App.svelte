@@ -1,6 +1,8 @@
 <script>
     // TODO - data persistence - some sort of cloud nosql??
-    // TODO - max active goals
+    // TODO - configurable max active goals
+    // TODO - store config (hide/show, max active...on app state, and persist)
+    // TODO - transistions on items (will need to break list items out into their own component)
     // TODO - readme
     // TODO - onboarding
     // TODO - could be cool to have 'undo' by storing snapshots of state everytime an action happens - would be easy with subscriptions

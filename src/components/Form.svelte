@@ -1,18 +1,18 @@
 <script>
     import { actions as goalActions } from '../stores/goals.ts';
 
-    let nameInput, steadyInput;
+    let nameInput, startDateInput;
 
     const onSubmit = e => {
         if (e.keyCode && e.keyCode !== 13) {
             return;
         }
         goalActions.createGoal({
-            steady: steadyInput.checked,
             name: nameInput.value,
+            startDate: startDateInput.value,
         });
-        steadyInput.checked = false;
         nameInput.value = '';
+        startDateInput.value = '';
     };
 </script>
 
@@ -20,10 +20,6 @@
     .container {
         width: 35%;
         margin: auto;
-    }
-    label {
-        display: inline;
-        font-weight: bold;
     }
     input[type='text'] {
         width: 100%;
@@ -41,8 +37,7 @@
     <input id="name" placeholder="Goal" type="text" bind:this={nameInput} on:keydown={onSubmit} />
     <div class="row">
         <span class="checkbox">
-            <input id="steady" type="checkbox" bind:this={steadyInput} />
-            <label for="steady">Start Steady</label>
+            <input id="startDate" type="date" bind:this={startDateInput} on:keydown={onSubmit} />
         </span>
         <button on:click={onSubmit}>Add</button>
     </div>

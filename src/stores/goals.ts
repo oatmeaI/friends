@@ -32,19 +32,38 @@ const resetGoal = goal => goals.update(oldGoals => ({ ...oldGoals, [goal.id]: { 
 async function getstuff() {
     // what is security lol
     // Move this to a config
+    // store object id
+
     const response = await fetch('https://goalie-3a6a.restdb.io/rest/goals', {
-        headers: { 'x-apikey': '5d8d9ae30e26877dd0577bd8' },
+        headers: {
+            'x-apikey': '5d8d9ae30e26877dd0577bd8',
+            'content-type': 'application/json',
+            'cache-control': 'no-cache',
+        },
     });
     const data = await response.json();
     const goals = data[0].data;
     return goals;
 }
 
+async function saveStuff(stuff) {
+    const response = await fetch('https://goalie-3a6a.restdb.io/rest/goals/5d8d9c9b6ea1113b0000404e', {
+        method: 'PUT',
+        headers: {
+            'x-apikey': '5d8d9ae30e26877dd0577bd8',
+            'content-type': 'application/json',
+            'cache-control': 'no-cache',
+        },
+        body: JSON.stringify({ data: stuff }),
+    });
+    console.log(await response.json());
+}
+
 export let goals: any = writable({});
 
 async function init() {
     const fetchedgoals = await getstuff();
-    goals.update(goals =>
+    goals.update(() =>
         Object.values(fetchedgoals).reduce(
             (goals, goal: Goal) => ({
                 ...goals,
@@ -56,7 +75,7 @@ async function init() {
             {},
         ),
     );
-    goals.subscribe(state => persist('goals', state));
+    goals.subscribe(state => saveStuff(state));
 }
 export const actions = {
     createGoal,

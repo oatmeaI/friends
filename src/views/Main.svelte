@@ -22,10 +22,7 @@
 
     $: {
         activeGoals = allGoals.filter(goal => goal.startDate >= weekAgo).slice(0, filterOn ? 3 : undefined);
-        probationGoals = allGoals.filter(goal => {
-            console.log({ ...goal }, { twoWeeksAgo, weekAgo }, goal.startDate >= twoWeeksAgo, goal.startDate < weekAgo);
-            return goal.startDate >= threeWeeksAgo && goal.startDate < weekAgo;
-        });
+        probationGoals = allGoals.filter(goal => goal.startDate >= threeWeeksAgo && goal.startDate < weekAgo);
         steadyGoals = allGoals.filter(goal => goal.startDate <= threeWeeksAgo);
     }
 </script>

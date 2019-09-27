@@ -29,23 +29,40 @@ const deleteGoal = (goal: Goal) => goals.update(oldGoals => omit(oldGoals, goal.
 
 const resetGoal = goal => goals.update(oldGoals => ({ ...oldGoals, [goal.id]: { ...goal, startDate: today } }));
 
-export let goals: any = writable(
-    Object.values(retrieve('goals', {})).reduce(
-        (goals, goal: Goal) => ({
-            ...goals,
-            [goal.id]: {
-                ...goal,
-                startDate: goal.startDate ? makeMidnight(new Date(goal.startDate)) : today,
-            },
-        }),
-        {},
-    ),
-);
-goals.subscribe(state => persist('goals', state));
+async function getstuff() {
+    // what is security lol
+    // Move this to a config
+    const response = await fetch('https://goalie-3a6a.restdb.io/rest/goals', {
+        headers: { 'x-apikey': '5d8d9ae30e26877dd0577bd8' },
+    });
+    const data = await response.json();
+    const goals = data[0].data;
+    return goals;
+}
 
+export let goals: any = writable({});
+
+async function init() {
+    const fetchedgoals = await getstuff();
+    goals.update(goals =>
+        Object.values(fetchedgoals).reduce(
+            (goals, goal: Goal) => ({
+                ...goals,
+                [goal.id]: {
+                    ...goal,
+                    startDate: goal.startDate ? makeMidnight(new Date(goal.startDate)) : today,
+                },
+            }),
+            {},
+        ),
+    );
+    goals.subscribe(state => persist('goals', state));
+}
 export const actions = {
     createGoal,
     updateGoal,
     deleteGoal,
     resetGoal,
 };
+
+init();

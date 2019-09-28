@@ -3,4 +3,6 @@ export const omit = (obj, key) => {
     return obj;
 };
 
+
+
 export const generateId = () => btoa(`${Math.random()}`).substring(0, 12);

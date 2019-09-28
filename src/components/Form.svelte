@@ -1,19 +1,10 @@
 <script>
-    import { actions as goalActions } from '../stores/goals.ts';
-
-    let nameInput, startDateInput;
-
-    const onSubmit = e => {
-        if (e.keyCode && e.keyCode !== 13) {
-            return;
-        }
-        goalActions.createGoal({
-            name: nameInput.value,
-            startDate: startDateInput.value,
-        });
-        nameInput.value = '';
-        startDateInput.value = '';
-    };
+    import { dateToInput } from '../stores/friends.ts';
+    import { dateFromString } from '../util/dates.ts';
+    export let friend,
+        onSubmit,
+        onCancel = undefined;
+    let inputState = friend;
 </script>
 
 <style>
@@ -28,18 +19,27 @@
         display: grid;
         grid-template-columns: 3fr 1fr;
     }
-    .checkbox {
-        padding-top: 5px;
-    }
 </style>
 
 <div class="container">
-    <input id="name" placeholder="Goal" type="text" bind:this={nameInput} on:keydown={onSubmit} />
+    <input placeholder="Name" type="text" bind:value={inputState.name} />
+    <input
+        placeholder="Last time contacted"
+        type="date"
+        on:change={e => (inputState.lastContacted = dateFromString(e.target.value))}
+        value={dateToInput(inputState.lastContacted)} />
+    <textarea bind:value={inputState.notes} placeholder="Notes" />
+    <input
+        placeholder="Birthday"
+        type="date"
+        on:change={e => (inputState.birthday = dateFromString(e.target.value))}
+        value={dateToInput(inputState.birthday)} />
+    <input placeholder="Frequency" type="number" bind:value={inputState.frequency} />
     <div class="row">
-        <span class="checkbox">
-            <input id="startDate" type="date" bind:this={startDateInput} on:keydown={onSubmit} />
-        </span>
         <button on:click={onSubmit}>Add</button>
+        {#if onCancel}
+            <button on:click={onCancel}>Cancel</button>
+        {/if}
     </div>
 
 </div>

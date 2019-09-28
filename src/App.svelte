@@ -1,25 +1,16 @@
 <script>
-    // TODO - data persistence - some sort of cloud nosql??
-    // TODO - configurable max active goals
-    // TODO - store config (hide/show, max active...on app state, and persist)
-    // TODO - transistions on items (will need to break list items out into their own component)
-    // TODO - readme
-    // TODO - onboarding
-    // TODO - could be cool to have 'undo' by storing snapshots of state everytime an action happens - would be easy with subscriptions
-    // TODO - keyboard shortcuts for everythaaaaaang
-
     import Main from './views/Main.svelte';
     import Edit from './views/Edit.svelte';
     import Detail from './views/Detail.svelte';
     import { state as appStore } from './stores/app.ts';
-    import { goals as goalsStore } from './stores/goals.ts';
+    import { friends as friendStore } from './stores/friends.ts';
 
-    let appState, selectedGoal, goalState;
+    let appState, selectedFriend, friendState;
     appStore.subscribe(state => (appState = state));
-    goalsStore.subscribe(goals => (goalState = goals));
+    friendStore.subscribe(state => (friendState = state));
 
     $: {
-        selectedGoal = appState.selectedGoal ? goalState[appState.selectedGoal] : null;
+        selectedFriend = appState.selectedFriend ? friendState[appState.selectedFriend] : null;
     }
 </script>
 
@@ -46,12 +37,12 @@
 </style>
 
 <main>
-    <h1>Goalie</h1>
+    <h1>Friendly</h1>
     {#if appState.view === 'all'}
-        <Main {selectedGoal} />
+        <Main friend={selectedFriend} />
     {:else if appState.view === 'edit'}
-        <Edit {selectedGoal} />
+        <Edit friend={selectedFriend} />
     {:else if appState.view === 'detail'}
-        <Detail {selectedGoal} />
+        <Detail friend={selectedFriend} />
     {/if}
 </main>

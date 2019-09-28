@@ -1,29 +1,37 @@
 <script>
     import Form from '../components/Form.svelte';
+    import Friend from '../components/Friend.svelte';
     import { today, weekAgo, twoWeeksAgo, threeWeeksAgo, plusWeeks } from '../util/dates.ts';
-    import { actions as goalActions, goals as goalsStore } from '../stores/goals.ts';
+    import {
+        actions as friendActions,
+        friends as friendStore,
+        views as friendViews,
+        isBirthday,
+    } from '../stores/friends.ts';
     import { actions as appActions, state as appStore } from '../stores/app.ts';
 
     let appState,
-        goalState,
-        allGoals,
-        activeGoals,
+        friendState,
+        allFriends,
+        contactToday,
         steadyGoals,
         probationGoals,
         editNameInput,
-        filterOn = false,
-        showProbation = true,
-        showSteady = false;
+        showAll = false;
 
-    goalsStore.subscribe(goals => {
-        goalState = goals;
-        allGoals = goals ? Object.values(goals) : [];
-    });
+    const emptyFriend = {
+        name: '',
+        lastContacted: null,
+        notes: '',
+        birthday: null,
+        frequency: 1,
+    };
+
+    friendStore.subscribe(friends => (friendState = friends));
 
     $: {
-        activeGoals = allGoals.filter(goal => goal.startDate >= weekAgo).slice(0, filterOn ? 3 : undefined);
-        probationGoals = allGoals.filter(goal => goal.startDate >= threeWeeksAgo && goal.startDate < weekAgo);
-        steadyGoals = allGoals.filter(goal => goal.startDate <= threeWeeksAgo);
+        contactToday = friendViews.activeFriends(friendState);
+        allFriends = friendState ? Object.values(friendState) : [];
     }
 </script>
 
@@ -55,59 +63,24 @@
     }
 </style>
 
-<Form />
+<Form onSubmit={() => friendActions.createFriend(emptyFriend)} friend={emptyFriend} />
 <section>
-    <h1>Active Goals</h1>
-    <button class="sideButton" on:click={() => (filterOn = !filterOn)}>{filterOn ? 'Show All' : 'Hide Extra'}</button>
+    <h1>Contact Today</h1>
+    <div />
     <ul>
-        {#each activeGoals as goal, index (goal.id)}
-            <li>
-                <h2>{goal.name}</h2>
-                Probation at: {plusWeeks(goal.startDate, 1).toLocaleDateString()}
-                <div class="controls">
-                    <button on:click={() => goalActions.resetGoal(goal)}>Reset</button>
-                    <button on:click={() => appActions.seeEdit(goal)}>Revise</button>
-                    <button on:click={() => goalActions.deleteGoal(goal)}>Not Working</button>
-                </div>
-            </li>
+        {#each contactToday as friend, index (friend.id)}
+            <Friend {friend} />
         {/each}
     </ul>
 </section>
+
 <section>
-    <h1>Probation Goals</h1>
-    <button class="sideButton" on:click={() => (showProbation = !showProbation)}>
-        {showProbation ? 'Hide' : 'Show'}
-    </button>
-    {#if showProbation}
+    <h1>All</h1>
+    <button class="sideButton" on:click={() => (showAll = !showAll)}>{showAll ? 'Hide' : 'Show'}</button>
+    {#if showAll}
         <ul>
-            {#each probationGoals as goal, index (goal.id)}
-                <li>
-                    <h2>{goal.name}</h2>
-                    Steady at: {plusWeeks(goal.startDate, 3).toLocaleDateString()}
-                    <div class="controls">
-                        <button on:click={() => goalActions.resetGoal(goal)}>Reset</button>
-                        <button on:click={() => appActions.seeEdit(goal)}>Revise</button>
-                        <button on:click={() => goalActions.deleteGoal(goal)}>Not Working</button>
-                    </div>
-                </li>
-            {/each}
-        </ul>
-    {/if}
-</section>
-<section>
-    <h1>Steady Goals</h1>
-    <button class="sideButton" on:click={() => (showSteady = !showSteady)}>{showSteady ? 'Hide' : 'Show'}</button>
-    {#if showSteady}
-        <ul>
-            {#each steadyGoals as goal, index (goal.id)}
-                <li>
-                    <h2>{goal.name}</h2>
-                    <div class="controls">
-                        <button on:click={() => goalActions.resetGoal(goal)}>Reset</button>
-                        <button on:click={() => appActions.seeEdit(goal)}>Revise</button>
-                        <button on:click={() => goalActions.deleteGoal(goal)}>Not Working</button>
-                    </div>
-                </li>
+            {#each allFriends as friend, index (friend.id)}
+                <Friend {friend} />
             {/each}
         </ul>
     {/if}

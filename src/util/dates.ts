@@ -1,8 +1,10 @@
-export const makeMidnight = date => new Date(date.setHours(1, 0, 0, 0));
+export const makeMidnight = date => new Date(date.setHours(0, 0, 0, 0));
+
+export const dateFromString = string => new Date(`${string} 00:00:00`);
 
 const _now = makeMidnight(new Date());
 
-export const today = makeMidnight(new Date());
+export const today = makeMidnight(_now);
 
 export const plusWeeks = (date, weeks) => {
     const temp = new Date(date);

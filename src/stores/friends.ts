@@ -45,6 +45,7 @@ const createFriend = (friend: Friend) => {
     const newFriend = fixDates({
         ...friend,
         lastContacted: friend.lastContacted || today,
+        birthday: friend.birthday || null,
         id,
     });
     friends.update(oldFriends => ({ ...oldFriends, [id]: newFriend }));

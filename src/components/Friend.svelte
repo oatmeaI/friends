@@ -13,11 +13,26 @@
         {#if isLonely(friend)}😭{/if}
         {friend.name}
     </h2>
-    <input
-        placeholder="Last time contacted"
-        type="date"
-        on:change={e => friendActions.updateFriend({ ...friend, lastContacted: dateFromString(e.target.value) })}
-        value={dateToInput(friend.lastContacted)} />
-    {friend.notes || ''}
-    <button on:click={() => appActions.seeEdit(friend)}>Edit</button>
+    <div>
+        Last Contacted:
+        <input
+            placeholder="Last time contacted"
+            type="date"
+            on:change={e => friendActions.updateFriend({ ...friend, lastContacted: dateFromString(e.target.value) })}
+            value={dateToInput(friend.lastContacted)} />
+    </div>
+    <div>{friend.notes || ''}</div>
+    <div>
+        Birthday:
+        {#if friend.birthday}
+            {friend.birthday.toLocaleDateString()}
+        {:else}
+            <input
+                type="date"
+                on:change={e => friendActions.updateFriend({ ...friend, birthday: dateFromString(e.target.value) })} />
+        {/if}
+    </div>
+    <div>
+        <button on:click={() => appActions.seeEdit(friend)}>Edit</button>
+    </div>
 </li>

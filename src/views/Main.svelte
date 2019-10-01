@@ -17,9 +17,9 @@
         steadyGoals,
         probationGoals,
         editNameInput,
-        showAll = false;
+        showAll = true;
 
-    const emptyFriend = {
+    let emptyFriend = {
         name: '',
         lastContacted: null,
         notes: '',
@@ -28,6 +28,17 @@
     };
 
     friendStore.subscribe(friends => (friendState = friends));
+
+    const createFriend = () => {
+        friendActions.createFriend(emptyFriend);
+        emptyFriend = {
+            name: '',
+            lastContacted: null,
+            notes: '',
+            birthday: null,
+            frequency: 1,
+        };
+    };
 
     $: {
         contactToday = friendViews.activeFriends(friendState);
@@ -63,7 +74,7 @@
     }
 </style>
 
-<Form onSubmit={() => friendActions.createFriend(emptyFriend)} friend={emptyFriend} />
+<Form onSubmit={createFriend} friend={emptyFriend} />
 <section>
     <h1>Contact Today</h1>
     <div />

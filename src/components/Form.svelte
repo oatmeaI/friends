@@ -1,9 +1,7 @@
 <script>
     import { dateToInput } from '../stores/friends.ts';
     import { dateFromString } from '../util/dates.ts';
-    export let friend,
-        onSubmit,
-        onCancel = undefined;
+    export let friend, onSubmit;
     let inputState = friend;
 </script>
 
@@ -37,9 +35,6 @@
     <input placeholder="Frequency" type="number" bind:value={friend.frequency} />
     <div class="row">
         <button on:click={onSubmit}>Add</button>
-        {#if onCancel}
-            <button on:click={onCancel}>Cancel</button>
-        {/if}
     </div>
 
 </div>

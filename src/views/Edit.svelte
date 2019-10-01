@@ -10,6 +10,11 @@
     };
 
     const onCancel = () => appActions.seeMain();
+
+    const onDelete = () => {
+        appActions.seeMain();
+        friendActions.deleteFriend(friend);
+    };
 </script>
 
 <style>
@@ -21,5 +26,7 @@
 
 <section>
     <h1>Edit Friend</h1>
-    <Form {friend} {onSubmit} {onCancel} />
+    <Form {friend} {onSubmit} />
+    <button on:click={onCancel}>Cancel</button>
+    <button on:click={onDelete}>Delete</button>
 </section>
